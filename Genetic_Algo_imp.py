@@ -46,7 +46,7 @@ def selection(pop, values, k=3):
             rand_pop = selected_pop
     return pop[rand_pop]
 
-def crossover(pair, r_cross):
+def crossover(pair, r_cross, n_bits):
     #copy values into the children
     c1, c2 = deepcopy(pair[0]), deepcopy(pair[1])
 
@@ -54,14 +54,14 @@ def crossover(pair, r_cross):
     #then we change the bits, this results in a 90% crossover with a r_cross of 0.9
     #give enough iterations.
     if random() < r_cross:
-
         #Select a point in the bitstring to change e.g bit 4 onwards or bit 7 onwards
-        point = randint(1, len(pair[0]) - 2)
+        point = randint(1, (n_bits-2))
 
         c1 = pair[0][:point] + pair[1][point:]
         c2 = pair[1][:point] + pair[0][point:]
 
     #May not always crossover
+        #print(len(c1))
     return [c1, c2]
 
 def mutation(cur, r_mut):
@@ -110,11 +110,14 @@ def main():
         #select parents for new Population
         selected = [selection(pop, values, 3) for _ in range(n_pop)]
         #after selecting the parents we need to alter them to create the new generation
+
         children = list()
         for i in range(0, n_pop):
-            for c in crossover(selected[i], r_cross):
+            temp = []
+            for c in crossover(selected[i], r_cross, n_bits):
                 #children.append(mutation(c, r_mut))
-                children.append(c)
+                temp.append(c)
+            children.append(temp)
         pop = children
 
     print("Done")
