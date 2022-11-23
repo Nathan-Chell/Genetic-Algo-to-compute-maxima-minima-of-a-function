@@ -65,10 +65,14 @@ def crossover(pair, r_cross, n_bits):
     return [c1, c2]
 
 def mutation(cur, r_mut):
-
     for i in range(len(cur)):
         if random() < r_mut:
-            cur[i] = 1 - int(cur[i])
+            #cur[i] = 1 - int(cur[i])
+            temp = cur
+            if cur[i] == "0":
+                cur = cur[:(i-1)] + "1" + cur[i:]
+            else:
+                cur = cur[:(i-1)] + "0" + cur[i:]
 
     return cur
 
@@ -115,8 +119,7 @@ def main():
         for i in range(0, n_pop):
             temp = []
             for c in crossover(selected[i], r_cross, n_bits):
-                #children.append(mutation(c, r_mut))
-                temp.append(c)
+                temp.append(mutation(c, r_mut))
             children.append(temp)
         pop = children
 
