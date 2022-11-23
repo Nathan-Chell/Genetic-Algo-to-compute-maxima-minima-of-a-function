@@ -1,7 +1,7 @@
 # Genetic-Algo-to-compute-maxima-minima-of-a-function
 Simple implimentation of a genetic algorithm to work out the maxima or minima or a function
 
-Current function x[0]^2 + x[1]^2.0.
+Current function x[0]^2 + x[1]^2.
 Algo is used to calculate x1, x2 for the minima of the above function.
 
 Vars:
