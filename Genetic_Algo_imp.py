@@ -20,6 +20,21 @@ def starting_pop(n_pop, n_bits, bounds):
         pop.append(arr)
     return pop
 
+def decode(bounds, n_bits, bitstring):
+    decoded = list()
+    largest = 2**n_bits
+    for i in range(len(bounds)):
+        #extracting the substring
+        #convert bitstring to string of chars
+        chars = ''.join([str(s) for s in bitstring[i]])
+        #convert to integer
+        integer = int(chars, 2)
+        #scale value to correct range
+        value = bounds[i][0] + (integer/largest) * (bounds[i][1] - bounds[i][0])
+        decoded.append(value)
+    return decoded
+
+
 
 
 def main():
@@ -39,6 +54,7 @@ def main():
     r_mut = 1.0 / (float(n_bits) * len(bounds))
 
     pop = starting_pop(n_pop, n_bits, bounds)
+    print(decode(bounds, n_bits, pop[i]))
 
 
 if __name__ == '__main__':
