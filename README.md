@@ -13,3 +13,5 @@ r_cross - rate at which a random part of the bistring is swapped.
 r_mut - rate at which a random bit in the bistring is flipped.
 
 
+See Algo-Overview for description of the algorithm
+
