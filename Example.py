@@ -73,7 +73,6 @@ def genetic_algorithm(objective, bounds, n_bits, n_iter, n_pop, r_cross, r_mut):
 	best, best_eval = 0, objective(decode(bounds, n_bits, pop[0]))
     # enumerate generations
     for gen in range(n_iter):
-		
         # decode population
         decoded = [decode(bounds, n_bits, p) for p in pop]
         # evaluate all candidates in the population
