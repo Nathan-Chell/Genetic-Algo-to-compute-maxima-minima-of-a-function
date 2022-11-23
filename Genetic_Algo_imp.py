@@ -1,6 +1,7 @@
 #Implimentation of a genetic algo
 
-from random import randint
+from copy import deepcopy
+from random import randint, random
 
 #Int the function we want to calculate the minima/ maxima of.
 def objective(x):
@@ -34,7 +35,42 @@ def decode(bounds, n_bits, bitstring):
         decoded.append(value)
     return decoded
 
+def selection(pop, values, k=3):
 
+    #source: https://www.geeksforgeeks.org/tournament-selection-ga/
+    #Tournament selection
+    rand_pop = randint(0, len(pop) - 1)
+    for i in range(0, k):
+        selected_pop = randint(0, len(pop) - 1)
+        if values[selected_pop] < values[rand_pop]:
+            rand_pop = selected_pop
+    return pop[rand_pop]
+
+def crossover(pair, r_cross):
+    #copy values into the children
+    c1, c2 = deepcopy(pair[0]), deepcopy(pair[1])
+
+    #if a random float between 0,1 is less than our cross overrate
+    #then we change the bits, this results in a 90% crossover with a r_cross of 0.9
+    #give enough iterations.
+    if random() < r_cross:
+
+        #Select a point in the bitstring to change e.g bit 4 onwards or bit 7 onwards
+        point = randint(1, len(pair[0]) - 2)
+
+        c1 = pair[0][:point] + pair[1][point:]
+        c2 = pair[1][:point] + pair[0][point:]
+
+    #May not always crossover
+    return [c1, c2]
+
+def mutation(cur, r_mut):
+
+    for i in range(len(cur)):
+        if random() < r_mut:
+            cur[i] = 1 - int(cur[i])
+
+    return cur
 
 
 def main():
@@ -54,7 +90,36 @@ def main():
     r_mut = 1.0 / (float(n_bits) * len(bounds))
 
     pop = starting_pop(n_pop, n_bits, bounds)
-    print(decode(bounds, n_bits, pop[i]))
+
+    #Track best solutions
+    best, best_eval = 0, objective(decode(bounds, n_bits, pop[0]))
+
+    #enumerate generations
+    for gen in range(n_iter):
+        #decode population
+        decoded = [decode(bounds, n_bits, p) for p in pop]
+
+        #determine the values of the current population.
+        values = [objective(d) for d in decoded]
+        #assign new best_eval
+        for i in range(n_pop):
+            if values[i] < best_eval:
+                best, best_eval = pop[i], values[i]
+                print("Found new best in gen: {}, current best_eval: {}, from values: {}".format(gen, values[i], decoded[i]))
+
+        #select parents for new Population
+        selected = [selection(pop, values, 3) for _ in range(n_pop)]
+        #after selecting the parents we need to alter them to create the new generation
+        children = list()
+        for i in range(0, n_pop):
+            for c in crossover(selected[i], r_cross):
+                #children.append(mutation(c, r_mut))
+                children.append(c)
+        pop = children
+
+    print("Done")
+    decoded = decode(bounds, n_bits, best)
+    print("Values {}, result in the best score of {}".format(decoded, best_eval))
 
 
 if __name__ == '__main__':
